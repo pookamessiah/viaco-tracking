@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Viaco Delivery Tracking</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" />
+</head>
+<body>
+    <div class="container tracker-container">
+        <h2 class="text-center mb-4">Track Your Package</h2>
+
+        <form method="POST" class="mb-4">
+            <div class="input-group">
+                <input type="text" name="code" class="form-control" placeholder="Enter Tracking ID" required>
+                <button class="btn btn-primary" type="submit">Track</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endif %}
+
+        {% if result %}
+        <div class="tracking-details">
+            <h5>📦 Package: {{ result.package }}</h5>
+            <h6>🚀 Status: <span class="badge bg-info text-dark">{{ result.status }}</span></h6>
+
+            <label>📦 Progress</label>
+            <div class="progress mb-3">
+                {% if result.status == 'Dispatched' %}
+                    <div class="progress-bar bg-warning" style="width: 30%">Dispatched</div>
+                {% elif result.status == 'In Transit' %}
+                    <div class="progress-bar bg-primary" style="width: 60%">In Transit</div>
+                {% elif result.status == 'Delivered' %}
+                    <div class="progress-bar bg-success" style="width: 100%">Delivered</div>
+                {% endif %}
+            </div>
+
+            <p>🛫 <strong>Takeoff:</strong> {{ result.takeoff }}</p>
+            <p>📍 <strong>Current Location:</strong> {{ result.current_location }}</p>
+            <p>🎯 <strong>Destination:</strong> {{ result.destination }}</p>
+            <p>📅 <strong>Expected Date:</strong> {{ result.expected_date }}</p>
+
+            <hr>
+
+            <h6>👤 Sender</h6>
+            <p>{{ result.sender.name }}<br>{{ result.sender.phone }}<br>{{ result.sender.email }}</p>
+
+            <h6>📥 Receiver</h6>
+            <p>{{ result.receiver.name }}<br>{{ result.receiver.phone }}<br>{{ result.receiver.email }}</p>
+
+            <h5 class="mt-4">📍 Package Route</h5>
+            <div id="map" style="height: 400px;"></div>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- JS Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"></script>
+
+    {% if result and result.coordinates %}
+    <script>
+        const coords = {{ result.coordinates | tojson }};
+        const map = L.map('map').setView(coords.current, 4);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map © <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        }).addTo(map);
+
+        L.marker(coords.takeoff).addTo(map).bindPopup("Takeoff: {{ result.takeoff }}");
+        L.marker(coords.current).addTo(map).bindPopup("Current Location: {{ result.current_location }}");
+        L.marker(coords.destination).addTo(map).bindPopup("Destination: {{ result.destination }}");
+
+        L.polyline([coords.takeoff, coords.current, coords.destination], {
+            color: 'blue',
+            dashArray: '5,10',
+            weight: 3
+        }).addTo(map);
+    </script>
+    {% endif %}
+</body>
+</html>

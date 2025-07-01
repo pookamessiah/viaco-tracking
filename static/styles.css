@@ -1,0 +1,15 @@
+body {
+    background: #f1f5f9;
+    font-family: 'Segoe UI', sans-serif;
+}
+.tracker-container {
+    max-width: 850px;
+    margin: 50px auto;
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+.tracking-details {
+    margin-top: 30px;
+}
