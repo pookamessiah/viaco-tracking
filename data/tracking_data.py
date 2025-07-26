@@ -15,7 +15,11 @@ tracking_data = {
         }
     },
     "ZP67JH344": {
+<<<<<<< HEAD
         "package": ["Iphone 15 Pro Max", "Teddy Bear", "Designer Bags", "Machiavelli Perfume", "Box of Original Jewelries"],
+=======
+        "package": "Iphone 15 Pro Max", "Teddy Bear", "Designer Bags", "Machiavelli Perfume", "Box of Original Jewelries",
+>>>>>>> 7ae97717493739f5898a79390fc64a22ce01c9f8
         "sender": {"name": "David Nowak", "phone": "+447838319023", "email": "davidnowak001@gmail"},
         "receiver": {"name": "Agnieszka Zaremba", "phone": "+64 275197241", "email": "azaremba74@hotmail.com"},
         "status": "In Progress",
